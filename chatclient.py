@@ -7,7 +7,7 @@ def Receive() :
     while True:
         try:
             Msg = CLIENTSOC.recv(1024).decode("utf8")
-            print("%s" %Msg)
+            print("{}".format(Msg))
         except OSError:
             break
 
@@ -15,7 +15,7 @@ def Send() :
     while True:
         SendMsg = input()
         CLIENTSOC.send(bytes(SendMsg,"utf8"))
-        if SendMsg == "{quit}":
+        if SendMsg == "[quit]":
             CLIENTSOC.close()
             sys.exit()
 

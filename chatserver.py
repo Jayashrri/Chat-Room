@@ -2,6 +2,8 @@
 import socket
 from threading import Thread
 
+USERNO=0
+
 def AcceptConn():
     while True:
         Client, ClientAddr = SERVER.accept()
@@ -9,21 +11,24 @@ def AcceptConn():
         Thread(target=HandleClient, args=(Client,)).start()
 
 def HandleClient(Client):
+    global USERNO
     Name = Client.recv(1024).decode("utf8")
-    Welcome = "Welcome %s! To exit chatroom, type {quit} anytime." %Name
+    USERNO=USERNO+1
+    Welcome = "Welcome {}! To exit chatroom, type [quit] anytime. Number of Users online: {}".format(Name,USERNO)
     Client.send(bytes(Welcome,"utf8"))
-    Msg = "%s has joined the chat." %Name
+    Msg = "{} has joined the chat. Number of Users online: {}".format(Name,USERNO)
     Broadcast(Msg, Name)
     clients[Client] = Name
 
     while True:
         Msg = Client.recv(1024).decode("utf8")
-        if Msg != "{quit}":
+        if Msg != "[quit]":
             Broadcast(Msg, Name, Name+": ")
         else:
             Client.close()
             del clients[Client]
-            Broadcast("%s has left the chat." %Name, Name)
+            USERNO=USERNO-1
+            Broadcast("{} has left the chat. Number of Users online: {}".format(Name,USERNO),Name)
             break
 
 def Broadcast(Msg, Sender="", Prefix="") :
