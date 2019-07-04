@@ -61,9 +61,9 @@ def AcceptConn():
 def HandleClient(Name, Client):
     global USERNO
     USERNO=USERNO+1
-    Welcome = "Welcome {}! To exit chatroom, type [quit] anytime. Number of Users online: {}".format(Name,USERNO)
+    Welcome = "Welcome {}! To exit chatroom, type [quit] anytime. \nTo export chat to text file, type [export]. \nNumber of Users online: {}".format(Name,USERNO)
     Client.send(bytes(Welcome,"utf8"))
-    Msg = "{} has joined the chat. Number of Users online: {}".format(Name,USERNO)
+    Msg = "{} has joined the chat. Number of Users online: {} \n".format(Name,USERNO)
     Broadcast(Msg, Name)
     clients[Client] = Name
 
@@ -76,7 +76,7 @@ def HandleClient(Name, Client):
             del clients[Client]
             del addresses[Client]
             USERNO=USERNO-1
-            Broadcast("{} has left the chat. Number of Users online: {}".format(Name,USERNO),Name)
+            Broadcast("{} has left the chat. Number of Users online: {} \n".format(Name,USERNO),Name)
             break
 
 def Broadcast(Msg, Sender="", Prefix="") :

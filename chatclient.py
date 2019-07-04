@@ -3,8 +3,20 @@ import socket
 import sys
 from threading import Thread
 import getpass
+from datetime import datetime
+
+ChatLog = []
+
+def ExportChat():
+    global ChatLog
+    NOW = datetime.now()
+    NOW = NOW.strftime("%d-%m-%Y_%H:%M:%S")
+    Export = open("{}.txt".format(NOW),"w")
+    Export.writelines(ChatLog)
+    Export.close
 
 def Receive() :
+    global ChatLog
     while True:
         try:
             Msg = CLIENTSOC.recv(1024).decode("utf8")
@@ -13,6 +25,7 @@ def Receive() :
                 sys.exit()
             else:
                 print("{}".format(Msg))
+                ChatLog.append(Msg)
         except OSError:
             break
 
@@ -20,9 +33,11 @@ def Send() :
     while True:
         SendMsg = input()
         CLIENTSOC.send(bytes(SendMsg,"utf8"))
-        if SendMsg == "[quit]":
+        if(SendMsg == "[quit]"):
             CLIENTSOC.close()
             sys.exit()
+        elif(SendMsg == "[export]"):
+            ExportChat()
 
 HOST = '127.0.0.1'
 PORT = 12345
